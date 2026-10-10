@@ -1,0 +1,30 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+app/build/
+build/
+*.keystore
+!debug.keystore
+# Release signing — never commit these
+*.jks
+keystore.properties
+# OAuth client secret downloaded from Google Cloud
+client_secret_*.json
+# Other OAuth credential files — never commit
+tv_client.json
+android_device.json
+*refresh_token*
+# Build / IDE caches
+.kotlin/
+# Stray local screenshots
+Screenshot*.png
+# Python caches
+__pycache__/
+*.pyc

@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <string name="connect_subtitle">Connectez votre Google Drive pour afficher vos photos.</string>
+    <string name="connect_button">Connecter Google Drive</string>
+    <string name="connect_button_busy">Connexion…</string>
+    <string name="connect_local_button">Utiliser un dossier local</string>
+    <string name="row_source">Source</string>
+    <string name="source_drive">Google Drive</string>
+    <string name="source_local">Dossier local</string>
+
+    <string name="loading_photos">Chargement des photos…</string>
+    <string name="error_load_title">Impossible de charger les photos</string>
+    <string name="hint_up_settings">Appuyez sur Haut pour ouvrir les Paramètres.</string>
+    <string name="empty_no_photos">Aucune photo dans ce dossier</string>
+    <string name="empty_pick_folder">Appuyez sur Haut pour ouvrir les Paramètres et choisir un dossier.</string>
+
+    <string name="settings_title">Paramètres</string>
+    <string name="section_language">Langue</string>
+    <string name="section_photos">Photos</string>
+    <string name="section_display">Affichage</string>
+    <string name="section_night">Mode nuit</string>
+    <string name="section_startup">Démarrage</string>
+    <string name="section_account">Compte</string>
+
+    <string name="row_language">Langue</string>
+    <string name="row_photo_source">Source des photos</string>
+    <string name="row_interval">Temps entre les photos</string>
+    <string name="row_order">Ordre</string>
+    <string name="row_subfolders">Inclure les sous-dossiers</string>
+    <string name="row_refresh">Actualiser le dossier</string>
+    <string name="row_scaling">Mise à l’échelle</string>
+    <string name="row_transition">Transition</string>
+    <string name="row_show_clock">Afficher l’horloge</string>
+    <string name="row_clock_format">Format de l’heure</string>
+    <string name="row_dim_overnight">Atténuer la nuit</string>
+    <string name="row_from">De</string>
+    <string name="row_until">À</string>
+    <string name="row_start_on_boot">Démarrer à l’allumage</string>
+    <string name="row_google_drive">Google Drive</string>
+    <string name="action_disconnect">Déconnecter</string>
+    <string name="action_close">Fermer (Retour)</string>
+    <string name="not_connected">Non connecté.</string>
+    <string name="demo_note">Mode démo — photos d’exemple affichées. Compilez avec DEMO_MODE=false pour connecter votre Google Drive.</string>
+
+    <string name="val_on">Activé</string>
+    <string name="val_off">Désactivé</string>
+    <string name="clock_12h">12 heures</string>
+    <string name="clock_24h">24 heures</string>
+
+    <string name="scale_fit">Ajuster (bandes)</string>
+    <string name="scale_fill">Remplir (rogner)</string>
+    <string name="scale_stretch">Étirer</string>
+
+    <string name="trans_fade">Fondu</string>
+    <string name="trans_slide">Glissement</string>
+    <string name="trans_slide_up">Glissement vertical</string>
+    <string name="trans_zoom">Zoom</string>
+    <string name="trans_kenburns">Ken Burns</string>
+    <string name="trans_none">Aucune</string>
+
+    <string name="order_sequential">Séquentiel</string>
+    <string name="order_shuffle">Aléatoire</string>
+
+    <string name="folder_title">Choisir le dossier de photos</string>
+    <string name="folder_use_this">Utiliser ce dossier (\"%1$s\")</string>
+    <string name="folder_loading">Chargement…</string>
+    <string name="folder_none">Aucun sous-dossier ici.</string>
+    <string name="my_drive">Mon Drive</string>
+</resources>

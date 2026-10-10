@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <string name="connect_subtitle">وصّل Google Drive لعرض صورك.</string>
+    <string name="connect_button">توصيل Google Drive</string>
+    <string name="connect_button_busy">جارٍ التوصيل…</string>
+    <string name="connect_local_button">استخدام مجلد محلي</string>
+    <string name="row_source">المصدر</string>
+    <string name="source_drive">Google Drive</string>
+    <string name="source_local">مجلد محلي</string>
+
+    <string name="loading_photos">جارٍ تحميل الصور…</string>
+    <string name="error_load_title">تعذّر تحميل الصور</string>
+    <string name="hint_up_settings">اضغط للأعلى لفتح الإعدادات.</string>
+    <string name="empty_no_photos">لا توجد صور في هذا المجلد</string>
+    <string name="empty_pick_folder">اضغط للأعلى لفتح الإعدادات واختيار مجلد.</string>
+
+    <string name="settings_title">الإعدادات</string>
+    <string name="section_language">اللغة</string>
+    <string name="section_photos">الصور</string>
+    <string name="section_display">العرض</string>
+    <string name="section_night">الوضع الليلي</string>
+    <string name="section_startup">بدء التشغيل</string>
+    <string name="section_account">الحساب</string>
+
+    <string name="row_language">اللغة</string>
+    <string name="row_photo_source">مصدر الصور</string>
+    <string name="row_interval">الوقت بين الصور</string>
+    <string name="row_order">الترتيب</string>
+    <string name="row_subfolders">تضمين المجلدات الفرعية</string>
+    <string name="row_refresh">تحديث المجلد</string>
+    <string name="row_scaling">التحجيم</string>
+    <string name="row_transition">الانتقال</string>
+    <string name="row_show_clock">إظهار الساعة</string>
+    <string name="row_clock_format">تنسيق الساعة</string>
+    <string name="row_dim_overnight">تعتيم ليلاً</string>
+    <string name="row_from">من</string>
+    <string name="row_until">إلى</string>
+    <string name="row_start_on_boot">التشغيل عند بدء الجهاز</string>
+    <string name="row_google_drive">Google Drive</string>
+    <string name="action_disconnect">قطع الاتصال</string>
+    <string name="action_close">إغلاق (رجوع)</string>
+    <string name="not_connected">غير متصل.</string>
+    <string name="demo_note">الوضع التجريبي — يتم عرض صور نموذجية. اجمع باستخدام DEMO_MODE=false لتوصيل Google Drive.</string>
+
+    <string name="val_on">تشغيل</string>
+    <string name="val_off">إيقاف</string>
+    <string name="clock_12h">12 ساعة</string>
+    <string name="clock_24h">24 ساعة</string>
+
+    <string name="scale_fit">احتواء (إطار)</string>
+    <string name="scale_fill">ملء (اقتصاص)</string>
+    <string name="scale_stretch">تمديد</string>
+
+    <string name="trans_fade">تلاشٍ</string>
+    <string name="trans_slide">انزلاق</string>
+    <string name="trans_slide_up">انزلاق لأعلى</string>
+    <string name="trans_zoom">تكبير</string>
+    <string name="trans_kenburns">Ken Burns</string>
+    <string name="trans_none">بلا</string>
+
+    <string name="order_sequential">تسلسلي</string>
+    <string name="order_shuffle">عشوائي</string>
+
+    <string name="folder_title">اختيار مجلد الصور</string>
+    <string name="folder_use_this">استخدام هذا المجلد (\"%1$s\")</string>
+    <string name="folder_loading">جارٍ التحميل…</string>
+    <string name="folder_none">لا مجلدات فرعية هنا.</string>
+    <string name="my_drive">قرصي</string>
+</resources>

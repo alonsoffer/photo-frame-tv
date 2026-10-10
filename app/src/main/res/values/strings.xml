@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <!-- Connect -->
+    <string name="connect_subtitle">Connect your Google Drive to show your photos.</string>
+    <string name="connect_button">Connect Google Drive</string>
+    <string name="connect_button_busy">Connecting…</string>
+    <string name="connect_local_button">Use a local folder</string>
+    <string name="row_source">Source</string>
+    <string name="source_drive">Google Drive</string>
+    <string name="source_local">Local folder</string>
+
+    <!-- Slideshow -->
+    <string name="loading_photos">Loading photos…</string>
+    <string name="error_load_title">Couldn\'t load photos</string>
+    <string name="hint_up_settings">Press Up to open Settings.</string>
+    <string name="empty_no_photos">No photos in this folder</string>
+    <string name="empty_pick_folder">Press Up to open Settings and pick a folder.</string>
+
+    <!-- Settings: sections -->
+    <string name="settings_title">Settings</string>
+    <string name="section_language">Language</string>
+    <string name="section_photos">Photos</string>
+    <string name="section_display">Display</string>
+    <string name="section_night">Night mode</string>
+    <string name="section_startup">Startup</string>
+    <string name="section_account">Account</string>
+
+    <!-- Settings: rows -->
+    <string name="row_language">Language</string>
+    <string name="row_photo_source">Photo source</string>
+    <string name="row_interval">Time between photos</string>
+    <string name="row_order">Order</string>
+    <string name="row_subfolders">Include subfolders</string>
+    <string name="row_refresh">Refresh folder</string>
+    <string name="row_scaling">Scaling</string>
+    <string name="row_transition">Transition</string>
+    <string name="row_show_clock">Show clock</string>
+    <string name="row_clock_format">Clock format</string>
+    <string name="row_dim_overnight">Dim overnight</string>
+    <string name="row_from">From</string>
+    <string name="row_until">Until</string>
+    <string name="row_start_on_boot">Start on power-on</string>
+    <string name="row_google_drive">Google Drive</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_close">Close (Back)</string>
+    <string name="not_connected">Not connected.</string>
+    <string name="demo_note">Demo mode — showing sample photos. Build with DEMO_MODE=false to connect your Google Drive.</string>
+
+    <!-- Values -->
+    <string name="val_on">On</string>
+    <string name="val_off">Off</string>
+    <string name="clock_12h">12-hour</string>
+    <string name="clock_24h">24-hour</string>
+
+    <!-- Scaling -->
+    <string name="scale_fit">Fit (letterbox)</string>
+    <string name="scale_fill">Fill (crop)</string>
+    <string name="scale_stretch">Stretch</string>
+
+    <!-- Transitions -->
+    <string name="trans_fade">Fade</string>
+    <string name="trans_slide">Slide</string>
+    <string name="trans_slide_up">Slide up</string>
+    <string name="trans_zoom">Zoom</string>
+    <string name="trans_kenburns">Ken Burns</string>
+    <string name="trans_none">None</string>
+
+    <!-- Order -->
+    <string name="order_sequential">Sequential</string>
+    <string name="order_shuffle">Shuffle</string>
+
+    <!-- Folder browser -->
+    <string name="folder_title">Choose photo folder</string>
+    <string name="folder_use_this">Use this folder (\"%1$s\")</string>
+    <string name="folder_loading">Loading…</string>
+    <string name="folder_none">No subfolders here.</string>
+    <string name="my_drive">My Drive</string>
+</resources>

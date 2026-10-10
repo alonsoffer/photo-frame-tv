@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <string name="connect_subtitle">חברו את Google Drive כדי להציג את התמונות שלכם.</string>
+    <string name="connect_button">חיבור ל-Google Drive</string>
+    <string name="connect_button_busy">מתחבר…</string>
+    <string name="connect_local_button">בחירת תיקייה מקומית</string>
+    <string name="row_source">מקור</string>
+    <string name="source_drive">Google Drive</string>
+    <string name="source_local">תיקייה מקומית</string>
+
+    <string name="loading_photos">טוען תמונות…</string>
+    <string name="error_load_title">לא ניתן לטעון תמונות</string>
+    <string name="hint_up_settings">לחצו למעלה כדי לפתוח את ההגדרות.</string>
+    <string name="empty_no_photos">אין תמונות בתיקייה הזו</string>
+    <string name="empty_pick_folder">לחצו למעלה כדי לפתוח את ההגדרות ולבחור תיקייה.</string>
+
+    <string name="settings_title">הגדרות</string>
+    <string name="section_language">שפה</string>
+    <string name="section_photos">תמונות</string>
+    <string name="section_display">תצוגה</string>
+    <string name="section_night">מצב לילה</string>
+    <string name="section_startup">הפעלה</string>
+    <string name="section_account">חשבון</string>
+
+    <string name="row_language">שפה</string>
+    <string name="row_photo_source">מקור התמונות</string>
+    <string name="row_interval">זמן בין תמונות</string>
+    <string name="row_order">סדר</string>
+    <string name="row_subfolders">כלול תת-תיקיות</string>
+    <string name="row_refresh">רענון התיקייה</string>
+    <string name="row_scaling">התאמת גודל</string>
+    <string name="row_transition">מעבר</string>
+    <string name="row_show_clock">הצגת שעון</string>
+    <string name="row_clock_format">פורמט שעון</string>
+    <string name="row_dim_overnight">עמעום בלילה</string>
+    <string name="row_from">מ-</string>
+    <string name="row_until">עד</string>
+    <string name="row_start_on_boot">הפעלה עם הדלקת המכשיר</string>
+    <string name="row_google_drive">Google Drive</string>
+    <string name="action_disconnect">התנתקות</string>
+    <string name="action_close">סגירה (חזרה)</string>
+    <string name="not_connected">לא מחובר.</string>
+    <string name="demo_note">מצב דמו — מוצגות תמונות לדוגמה. בנו עם DEMO_MODE=false כדי לחבר את Google Drive שלכם.</string>
+
+    <string name="val_on">פועל</string>
+    <string name="val_off">כבוי</string>
+    <string name="clock_12h">12 שעות</string>
+    <string name="clock_24h">24 שעות</string>
+
+    <string name="scale_fit">התאמה (מסגור)</string>
+    <string name="scale_fill">מילוי (חיתוך)</string>
+    <string name="scale_stretch">מתיחה</string>
+
+    <string name="trans_fade">עמעום</string>
+    <string name="trans_slide">החלקה</string>
+    <string name="trans_slide_up">החלקה למעלה</string>
+    <string name="trans_zoom">זום</string>
+    <string name="trans_kenburns">Ken Burns</string>
+    <string name="trans_none">ללא</string>
+
+    <string name="order_sequential">רציף</string>
+    <string name="order_shuffle">אקראי</string>
+
+    <string name="folder_title">בחירת תיקיית תמונות</string>
+    <string name="folder_use_this">בחירה בתיקייה הזו (\"%1$s\")</string>
+    <string name="folder_loading">טוען…</string>
+    <string name="folder_none">אין כאן תת-תיקיות.</string>
+    <string name="my_drive">הדרייב שלי</string>
+</resources>

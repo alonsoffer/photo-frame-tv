@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <string name="connect_subtitle">Подключите Google Drive, чтобы показывать ваши фото.</string>
+    <string name="connect_button">Подключить Google Drive</string>
+    <string name="connect_button_busy">Подключение…</string>
+    <string name="connect_local_button">Использовать локальную папку</string>
+    <string name="row_source">Источник</string>
+    <string name="source_drive">Google Drive</string>
+    <string name="source_local">Локальная папка</string>
+
+    <string name="loading_photos">Загрузка фото…</string>
+    <string name="error_load_title">Не удалось загрузить фото</string>
+    <string name="hint_up_settings">Нажмите «Вверх», чтобы открыть настройки.</string>
+    <string name="empty_no_photos">В этой папке нет фото</string>
+    <string name="empty_pick_folder">Нажмите «Вверх», чтобы открыть настройки и выбрать папку.</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="section_language">Язык</string>
+    <string name="section_photos">Фото</string>
+    <string name="section_display">Экран</string>
+    <string name="section_night">Ночной режим</string>
+    <string name="section_startup">Запуск</string>
+    <string name="section_account">Аккаунт</string>
+
+    <string name="row_language">Язык</string>
+    <string name="row_photo_source">Источник фото</string>
+    <string name="row_interval">Время между фото</string>
+    <string name="row_order">Порядок</string>
+    <string name="row_subfolders">Включить подпапки</string>
+    <string name="row_refresh">Обновление папки</string>
+    <string name="row_scaling">Масштаб</string>
+    <string name="row_transition">Переход</string>
+    <string name="row_show_clock">Показывать часы</string>
+    <string name="row_clock_format">Формат времени</string>
+    <string name="row_dim_overnight">Затемнять ночью</string>
+    <string name="row_from">С</string>
+    <string name="row_until">До</string>
+    <string name="row_start_on_boot">Запуск при включении</string>
+    <string name="row_google_drive">Google Drive</string>
+    <string name="action_disconnect">Отключить</string>
+    <string name="action_close">Закрыть (Назад)</string>
+    <string name="not_connected">Не подключено.</string>
+    <string name="demo_note">Демо-режим — показаны примеры фото. Соберите с DEMO_MODE=false, чтобы подключить Google Drive.</string>
+
+    <string name="val_on">Вкл.</string>
+    <string name="val_off">Выкл.</string>
+    <string name="clock_12h">12 часов</string>
+    <string name="clock_24h">24 часа</string>
+
+    <string name="scale_fit">Вписать (поля)</string>
+    <string name="scale_fill">Заполнить (обрезка)</string>
+    <string name="scale_stretch">Растянуть</string>
+
+    <string name="trans_fade">Плавно</string>
+    <string name="trans_slide">Сдвиг</string>
+    <string name="trans_slide_up">Сдвиг вверх</string>
+    <string name="trans_zoom">Масштаб</string>
+    <string name="trans_kenburns">Ken Burns</string>
+    <string name="trans_none">Нет</string>
+
+    <string name="order_sequential">По порядку</string>
+    <string name="order_shuffle">Случайно</string>
+
+    <string name="folder_title">Выбор папки с фото</string>
+    <string name="folder_use_this">Использовать эту папку (\"%1$s\")</string>
+    <string name="folder_loading">Загрузка…</string>
+    <string name="folder_none">Здесь нет подпапок.</string>
+    <string name="my_drive">Мой диск</string>
+</resources>

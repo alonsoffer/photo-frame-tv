@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#1B2430"
+        android:pathData="M0,0h320v180h-320z" />
+    <!-- Simple photo-frame glyph -->
+    <path
+        android:fillColor="#2E3B4E"
+        android:pathData="M96,50h128v80h-128z" />
+    <path
+        android:fillColor="#5AA9E6"
+        android:pathData="M104,58h112v64h-112z" />
+    <path
+        android:fillColor="#FFD166"
+        android:pathData="M128,96 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0" />
+    <path
+        android:fillColor="#2E3B4E"
+        android:pathData="M104,122l30,-30l24,24l20,-20l34,34z" />
+</vector>
