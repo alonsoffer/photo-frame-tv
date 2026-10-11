@@ -88,10 +88,10 @@ fun DeviceConnectScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.widthIn(max = 1000.dp).padding(40.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.widthIn(max = 1000.dp).padding(horizontal = 40.dp, vertical = 20.dp),
         ) {
-            Text("Connect Google Drive", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Bold)
+            Text("Connect Google Drive", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold)
 
             when (val s = state) {
                 DState.Loading ->
@@ -104,16 +104,16 @@ fun DeviceConnectScreen(
                             .background(Color.White)
                             .padding(14.dp),
                     ) {
-                        QrImage(s.code.qrContent, modifier = Modifier.size(260.dp))
+                        QrImage(s.code.qrContent, modifier = Modifier.size(220.dp))
                     }
-                    Text("Scan with the Photo Frame app on your phone", color = Color(0xFFB0B8C4), fontSize = 20.sp)
+                    Text("Scan with the Photo Frame app on your phone", color = Color(0xFFB0B8C4), fontSize = 18.sp)
                     Text(
                         "— or open ${s.code.url} and enter:",
                         color = Color(0xFF8A94A6),
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         textAlign = TextAlign.Center,
                     )
-                    Text(s.code.userCode, color = Color.White, fontSize = 44.sp, fontWeight = FontWeight.Bold)
+                    Text(s.code.userCode, color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.Bold)
                     Text("Waiting for approval…", color = Color(0xFF8A94A6), fontSize = 16.sp)
                 }
 
