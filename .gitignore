@@ -28,3 +28,10 @@ Screenshot*.png
 # Python caches
 __pycache__/
 *.pyc
+
+# Play Developer API service-account key — never commit
+play-sa.json
+*-sa.json
+play-service-account*.json
+# Python venv
+.venv/
