@@ -28,9 +28,9 @@ android {
 
     defaultConfig {
         applicationId = "com.photoframe.tv"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 36
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         // Demo mode shows sample photos without needing a Google account. Toggle in local.properties.
