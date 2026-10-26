@@ -10,31 +10,48 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Surface
+import com.photoframe.tv.R
 import com.photoframe.tv.data.PhotoSource
-import com.photoframe.tv.data.SlideshowSettings
 import com.photoframe.tv.di.AppGraph
-import com.photoframe.tv.ui.auth.ConnectScreen
 import com.photoframe.tv.ui.auth.DeviceConnectScreen
-import com.photoframe.tv.ui.settings.FolderBrowserScreen
 import com.photoframe.tv.ui.settings.SettingsScreen
 import com.photoframe.tv.ui.slideshow.SlideshowScreen
+import com.photoframe.tv.ui.sources.SourcesScreen
 import kotlinx.coroutines.launch
 
-private enum class Screen { Connect, DeviceConnect, Slideshow, Settings, Folders }
+private enum class Screen { Sources, DeviceConnect, Slideshow, Settings }
 
 @Composable
 fun PhotoFrameApp(graph: AppGraph) {
     val scope = rememberCoroutineScope()
     val settings by graph.settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
+    val driveName = stringResource(R.string.type_drive)
 
-    // Decide the first screen once settings have loaded (source-aware).
     var screen by remember { mutableStateOf<Screen?>(null) }
+    var migrated by remember { mutableStateOf(false) }
+    // Whether the Sources screen was opened from Settings (so "done"/back returns there).
+    var sourcesFromSettings by remember { mutableStateOf(false) }
+
     LaunchedEffect(settings) {
+        val s = settings ?: return@LaunchedEffect
+
+        // One-time migration: fold a legacy single-source install into the new sources list.
+        if (!migrated) {
+            migrated = true
+            if (!graph.isDemoMode && s.sources.isEmpty()) {
+                s.localTreeUri?.let { graph.settingsRepository.addLocalSource(it, s.localFolderName.ifBlank { driveName }) }
+                if (graph.deviceAuthManager.hasRefreshToken) graph.settingsRepository.addDriveSource(driveName)
+            }
+        }
+
+        // Pick the first screen once (source-aware, including legacy state).
         if (screen == null) {
-            val s = settings ?: return@LaunchedEffect
-            screen = if (needsSetup(s, graph)) Screen.Connect else Screen.Slideshow
+            val hasAny = graph.isDemoMode || s.sources.isNotEmpty() ||
+                s.localTreeUri != null || graph.deviceAuthManager.hasRefreshToken
+            screen = if (hasAny) Screen.Slideshow else Screen.Sources
         }
     }
 
@@ -42,21 +59,41 @@ fun PhotoFrameApp(graph: AppGraph) {
         when (screen) {
             null -> Unit // brief blank while settings load
 
-            Screen.Connect -> ConnectScreen(
-                onConnectDrive = { screen = Screen.DeviceConnect },
-                onLocalFolderPicked = { uri, name ->
-                    scope.launch { graph.settingsRepository.setLocalFolder(uri, name) }
-                    screen = Screen.Slideshow
+            Screen.Sources -> SourcesScreen(
+                sources = settings?.sources ?: emptyList(),
+                onAddLocal = { uri, name -> scope.launch { graph.settingsRepository.addLocalSource(uri, name) } },
+                onAddDrive = {
+                    if (graph.deviceAuthManager.hasRefreshToken) {
+                        scope.launch { graph.settingsRepository.addDriveSource(driveName) }
+                    } else {
+                        screen = Screen.DeviceConnect
+                    }
+                },
+                onRemove = { id -> scope.launch { graph.settingsRepository.removeSource(id) } },
+                onDone = {
+                    val target = if (sourcesFromSettings) Screen.Settings else Screen.Slideshow
+                    sourcesFromSettings = false
+                    screen = target
+                },
+                onBack = {
+                    when {
+                        sourcesFromSettings -> { sourcesFromSettings = false; screen = Screen.Settings }
+                        (settings?.sources?.isNotEmpty() == true) -> screen = Screen.Slideshow
+                        else -> Unit // nothing configured yet — stay on Sources
+                    }
                 },
             )
 
             Screen.DeviceConnect -> DeviceConnectScreen(
                 deviceAuth = graph.deviceAuthManager,
                 onConnected = {
-                    scope.launch { graph.settingsRepository.setPhotoSource(PhotoSource.DRIVE) }
-                    screen = Screen.Slideshow
+                    scope.launch {
+                        graph.settingsRepository.setPhotoSource(PhotoSource.DRIVE)
+                        graph.settingsRepository.addDriveSource(driveName)
+                    }
+                    screen = Screen.Sources
                 },
-                onBack = { screen = Screen.Connect },
+                onBack = { screen = Screen.Sources },
             )
 
             Screen.Slideshow -> SlideshowScreen(
@@ -64,6 +101,8 @@ fun PhotoFrameApp(graph: AppGraph) {
                 localRepository = graph.localRepository,
                 settingsRepository = graph.settingsRepository,
                 imageLoader = graph.imageLoader,
+                isDemoMode = graph.isDemoMode,
+                driveConnected = { graph.deviceAuthManager.hasRefreshToken },
                 onOpenSettings = { screen = Screen.Settings },
             )
 
@@ -71,33 +110,10 @@ fun PhotoFrameApp(graph: AppGraph) {
                 settingsRepository = graph.settingsRepository,
                 deviceAuth = graph.deviceAuthManager,
                 isDemoMode = graph.isDemoMode,
-                onOpenFolderBrowser = { screen = Screen.Folders },
-                onConnectDrive = { screen = Screen.DeviceConnect },
-                onDisconnect = {
-                    graph.deviceAuthManager.disconnect()
-                    screen = Screen.Connect
-                },
+                onManageSources = { sourcesFromSettings = true; screen = Screen.Sources },
                 onClose = { screen = Screen.Slideshow },
             )
-
-            Screen.Folders -> FolderBrowserScreen(
-                driveRepository = graph.driveRepository,
-                onPick = { id, name ->
-                    scope.launch { graph.settingsRepository.setFolder(id, name) }
-                    screen = Screen.Settings
-                },
-                onClose = { screen = Screen.Settings },
-            )
         }
-    }
-}
-
-/** Whether first-run setup is still needed for the currently-selected photo source. */
-private fun needsSetup(s: SlideshowSettings, graph: AppGraph): Boolean {
-    if (graph.isDemoMode) return false
-    return when (s.photoSource) {
-        PhotoSource.LOCAL -> s.localTreeUri == null
-        PhotoSource.DRIVE -> !graph.deviceAuthManager.hasRefreshToken
     }
 }
 

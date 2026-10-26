@@ -31,6 +31,8 @@ enum class PhotoSource {
 
 /** All user-configurable slideshow settings. */
 data class SlideshowSettings(
+    /** Configured photo sources; the slideshow pools photos from all of them at once. */
+    val sources: List<SourceEntry> = emptyList(),
     val intervalSeconds: Int = 8,
     val scaleMode: ScaleMode = ScaleMode.FILL,
     val transition: Transition = Transition.FADE,

@@ -64,10 +64,14 @@ fun SlideshowScreen(
     localRepository: DriveRepository,
     settingsRepository: SettingsRepository,
     imageLoader: ImageLoader,
+    isDemoMode: Boolean,
+    driveConnected: () -> Boolean,
     onOpenSettings: () -> Unit,
 ) {
     val vm: SlideshowViewModel = viewModel(
-        factory = simpleFactory { SlideshowViewModel(driveRepository, localRepository, settingsRepository) },
+        factory = simpleFactory {
+            SlideshowViewModel(driveRepository, localRepository, settingsRepository, isDemoMode, driveConnected)
+        },
     )
     val context = LocalContext.current
 

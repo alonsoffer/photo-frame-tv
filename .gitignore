@@ -35,3 +35,6 @@ play-sa.json
 play-service-account*.json
 # Python venv
 .venv/
+# Service-account key (contains a private key) — never commit
+secret-zephyr-*.json
+secret-zephyr-503314-f0-6973d099a808.json

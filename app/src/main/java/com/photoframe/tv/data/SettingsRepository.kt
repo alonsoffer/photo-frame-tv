@@ -10,13 +10,20 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
+import java.util.UUID
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "slideshow_settings")
 
 /** Reads and writes [SlideshowSettings] backed by Jetpack DataStore. */
 class SettingsRepository(private val context: Context) {
 
+    private val json = Json { ignoreUnknownKeys = true }
+    private val sourcesSerializer = ListSerializer(SourceEntry.serializer())
+
     private object Keys {
+        val sources = stringPreferencesKey("sources_json")
         val interval = intPreferencesKey("interval_seconds")
         val scale = stringPreferencesKey("scale_mode")
         val transition = stringPreferencesKey("transition")
@@ -39,6 +46,9 @@ class SettingsRepository(private val context: Context) {
     val settings: Flow<SlideshowSettings> = context.dataStore.data.map { p ->
         val default = SlideshowSettings()
         SlideshowSettings(
+            sources = p[Keys.sources]
+                ?.let { runCatching { json.decodeFromString(sourcesSerializer, it) }.getOrNull() }
+                ?: default.sources,
             intervalSeconds = p[Keys.interval] ?: default.intervalSeconds,
             scaleMode = p[Keys.scale]?.let { runCatching { ScaleMode.valueOf(it) }.getOrNull() } ?: default.scaleMode,
             transition = p[Keys.transition]?.let { runCatching { Transition.valueOf(it) }.getOrNull() } ?: default.transition,
@@ -81,6 +91,29 @@ class SettingsRepository(private val context: Context) {
     suspend fun setFolder(id: String?, name: String) = edit {
         if (id == null) it.remove(Keys.folderId) else it[Keys.folderId] = id
         it[Keys.folderName] = name
+    }
+
+    /** Add a local/USB folder as a source (no-op if the same tree URI is already added). */
+    suspend fun addLocalSource(treeUri: String, name: String) = mutateSources { list ->
+        if (list.any { it.type == SourceType.LOCAL && it.uri == treeUri }) list
+        else list + SourceEntry(UUID.randomUUID().toString(), SourceType.LOCAL, treeUri, name)
+    }
+
+    /** Add the connected Google Drive folder as a source (at most one Drive source). */
+    suspend fun addDriveSource(name: String) = mutateSources { list ->
+        if (list.any { it.type == SourceType.DRIVE }) list
+        else list + SourceEntry(UUID.randomUUID().toString(), SourceType.DRIVE, null, name)
+    }
+
+    suspend fun removeSource(id: String) = mutateSources { list -> list.filterNot { it.id == id } }
+
+    private suspend fun mutateSources(transform: (List<SourceEntry>) -> List<SourceEntry>) {
+        context.dataStore.edit { p ->
+            val current = p[Keys.sources]
+                ?.let { runCatching { json.decodeFromString(sourcesSerializer, it) }.getOrNull() }
+                ?: emptyList()
+            p[Keys.sources] = json.encodeToString(sourcesSerializer, transform(current))
+        }
     }
 
     private suspend fun edit(block: (androidx.datastore.preferences.core.MutablePreferences) -> Unit) {

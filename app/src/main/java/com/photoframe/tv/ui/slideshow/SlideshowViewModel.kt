@@ -6,6 +6,7 @@ import com.photoframe.tv.data.PhotoSource
 import com.photoframe.tv.data.PlayOrder
 import com.photoframe.tv.data.SettingsRepository
 import com.photoframe.tv.data.SlideshowSettings
+import com.photoframe.tv.data.SourceType
 import com.photoframe.tv.drive.DriveRepository
 import com.photoframe.tv.drive.Photo
 import kotlinx.coroutines.delay
@@ -23,6 +24,8 @@ class SlideshowViewModel(
     private val driveRepository: DriveRepository,
     private val localRepository: DriveRepository,
     settingsRepository: SettingsRepository,
+    private val isDemoMode: Boolean = false,
+    private val driveConnected: () -> Boolean = { true },
 ) : ViewModel() {
 
     val settings: StateFlow<SlideshowSettings> = settingsRepository.settings
@@ -44,6 +47,7 @@ class SlideshowViewModel(
     val playing: StateFlow<Boolean> = _playing.asStateFlow()
 
     private data class SourceKey(
+        val sources: List<String>,
         val source: PhotoSource,
         val folderId: String?,
         val localTreeUri: String?,
@@ -52,10 +56,15 @@ class SlideshowViewModel(
     )
 
     init {
-        // Full (re)load whenever the source, folder, or ordering changes.
+        // Full (re)load whenever the configured sources, folder, or ordering changes.
         viewModelScope.launch {
             settings
-                .map { SourceKey(it.photoSource, it.folderId, it.localTreeUri, it.includeSubfolders, it.order) }
+                .map { s ->
+                    SourceKey(
+                        s.sources.map { "${it.type}:${it.uri}" },
+                        s.photoSource, s.folderId, s.localTreeUri, s.includeSubfolders, s.order,
+                    )
+                }
                 .distinctUntilChanged()
                 .collect { reload(settings.value, resetIndex = true) }
         }
@@ -81,17 +90,13 @@ class SlideshowViewModel(
      * preserve the existing (shuffled) order, and leave the list untouched if the fetch fails.
      */
     private suspend fun reload(s: SlideshowSettings, resetIndex: Boolean) {
-        val local = s.photoSource == PhotoSource.LOCAL
-        val repo = if (local) localRepository else driveRepository
-        val folderArg = if (local) s.localTreeUri else s.folderId
-        val includeSub = s.includeSubfolders
         val order = s.order
         if (resetIndex) {
             _loading.value = true
             _error.value = null
         }
         try {
-            val loaded = repo.listPhotos(folderArg, includeSub)
+            val loaded = loadFromSources(s)
             val currentId = _photos.value.getOrNull(_index.value)?.id
             val ordered = when {
                 order != PlayOrder.SHUFFLE -> loaded
@@ -114,6 +119,39 @@ class SlideshowViewModel(
         } finally {
             if (resetIndex) _loading.value = false
         }
+    }
+
+    /**
+     * Gather photos from every configured source and merge them into one list. A failing source is
+     * skipped rather than failing the whole load. Falls back to the legacy single-source settings
+     * when no sources are configured yet (for installs predating multi-source), and to demo samples
+     * in demo mode.
+     */
+    private suspend fun loadFromSources(s: SlideshowSettings): List<Photo> {
+        if (isDemoMode) return driveRepository.listPhotos(null, false)
+
+        if (s.sources.isEmpty()) {
+            // Backward compatibility: behave like the old single-source app.
+            val local = s.photoSource == PhotoSource.LOCAL
+            val repo = if (local) localRepository else driveRepository
+            val folderArg = if (local) s.localTreeUri else s.folderId
+            return runCatching { repo.listPhotos(folderArg, s.includeSubfolders) }.getOrDefault(emptyList())
+        }
+
+        val merged = mutableListOf<Photo>()
+        val seen = HashSet<String>()
+        for (src in s.sources) {
+            val photos = runCatching {
+                when (src.type) {
+                    SourceType.LOCAL -> localRepository.listPhotos(src.uri, s.includeSubfolders)
+                    SourceType.DRIVE ->
+                        if (driveConnected()) driveRepository.listPhotos(null, s.includeSubfolders)
+                        else emptyList()
+                }
+            }.getOrDefault(emptyList())
+            for (p in photos) if (seen.add(p.id)) merged += p
+        }
+        return merged
     }
 
     /** Keep existing photos in their current (shuffled) order, drop deleted ones, append new ones. */

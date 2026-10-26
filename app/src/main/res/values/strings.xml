@@ -10,6 +10,18 @@
     <string name="source_drive">Google Drive</string>
     <string name="source_local">Local folder</string>
 
+    <!-- Sources (multi-source) -->
+    <string name="sources_title">Photo sources</string>
+    <string name="sources_subtitle">Add folders and Google Drive. Photos from every source play together.</string>
+    <string name="sources_none">No sources yet. Add a folder or Google Drive to begin.</string>
+    <string name="sources_add_folder">Add folder (local or USB)</string>
+    <string name="sources_add_drive">Add Google Drive</string>
+    <string name="sources_remove_hint">Press to remove</string>
+    <string name="sources_start">Start slideshow</string>
+    <string name="sources_manage">Photo sources</string>
+    <string name="type_local">Folder</string>
+    <string name="type_drive">Google Drive</string>
+
     <!-- Slideshow -->
     <string name="loading_photos">Loading photos…</string>
     <string name="error_load_title">Couldn\'t load photos</string>

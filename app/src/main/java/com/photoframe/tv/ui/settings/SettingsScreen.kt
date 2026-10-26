@@ -1,11 +1,6 @@
 package com.photoframe.tv.ui.settings
 
 import android.app.Activity
-import android.content.Intent
-import android.net.Uri
-import android.provider.DocumentsContract
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +31,6 @@ import com.photoframe.tv.AppLanguages
 import com.photoframe.tv.LocaleStore
 import com.photoframe.tv.R
 import com.photoframe.tv.auth.DeviceAuthManager
-import com.photoframe.tv.data.PhotoSource
 import com.photoframe.tv.data.PlayOrder
 import com.photoframe.tv.data.ScaleMode
 import com.photoframe.tv.data.SettingsRepository
@@ -56,9 +50,7 @@ fun SettingsScreen(
     settingsRepository: SettingsRepository,
     deviceAuth: DeviceAuthManager,
     isDemoMode: Boolean,
-    onOpenFolderBrowser: () -> Unit,
-    onConnectDrive: () -> Unit,
-    onDisconnect: () -> Unit,
+    onManageSources: () -> Unit,
     onClose: () -> Unit,
 ) {
     val vm: SettingsViewModel = viewModel(
@@ -106,21 +98,7 @@ fun SettingsScreen(
         when (it) { PlayOrder.SEQUENTIAL -> oSeq; PlayOrder.SHUFFLE -> oShuffle }
     }
 
-    val srcDrive = stringResource(R.string.source_drive)
-    val srcLocal = stringResource(R.string.source_local)
-    val sourceLabel: (PhotoSource) -> String = { if (it == PhotoSource.LOCAL) srcLocal else srcDrive }
-
-    val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        if (uri != null) {
-            runCatching {
-                context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            vm.setLocalFolder(uri.toString(), folderNameFromTree(uri))
-        }
-    }
-
     val currentLang = remember { LocaleStore.current(context) }
-    val myDrive = stringResource(R.string.my_drive)
 
     Column(
         modifier = Modifier
@@ -151,20 +129,11 @@ fun SettingsScreen(
         )
 
         SectionLabel(stringResource(R.string.section_photos))
-        DropdownSetting(stringResource(R.string.row_source), PhotoSource.entries, s.photoSource, sourceLabel, vm::setPhotoSource)
-        if (s.photoSource == PhotoSource.LOCAL) {
-            ActionRow(
-                stringResource(R.string.row_photo_source),
-                s.localFolderName.ifBlank { "—" },
-                onClick = { folderPicker.launch(null) },
-            )
-        } else {
-            ActionRow(
-                stringResource(R.string.row_photo_source),
-                if (s.folderId == null) myDrive else s.folderName,
-                onClick = onOpenFolderBrowser,
-            )
-        }
+        ActionRow(
+            stringResource(R.string.sources_manage),
+            s.sources.size.toString(),
+            onClick = onManageSources,
+        )
         DropdownSetting(stringResource(R.string.row_interval), IntervalOptions, s.intervalSeconds, { "${it}s" }, vm::setInterval)
         DropdownSetting(stringResource(R.string.row_order), PlayOrder.entries, s.order, orderLabel, vm::setOrder)
         DropdownSetting(stringResource(R.string.row_subfolders), BoolOptions, s.includeSubfolders, onOff, vm::setSubfolders)
@@ -184,13 +153,9 @@ fun SettingsScreen(
         SectionLabel(stringResource(R.string.section_startup))
         DropdownSetting(stringResource(R.string.row_start_on_boot), BoolOptions, s.startOnBoot, onOff, vm::setStartOnBoot)
 
-        SectionLabel(stringResource(R.string.section_account))
         if (isDemoMode) {
+            SectionLabel(stringResource(R.string.section_account))
             Text(stringResource(R.string.demo_note), color = Color(0xFF8A94A6), fontSize = 15.sp)
-        } else if (vm.isLinked) {
-            ActionRow(stringResource(R.string.row_google_drive), stringResource(R.string.action_disconnect), onClick = onDisconnect)
-        } else {
-            ActionRow(stringResource(R.string.row_google_drive), stringResource(R.string.connect_button), onClick = onConnectDrive)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -212,8 +177,3 @@ private fun SectionLabel(text: String) {
 private fun hourLabel(h: Int) = "%02d:00".format(h)
 private fun refreshLabel(m: Int) = if (m < 60) "${m}m" else "${m / 60}h"
 
-/** Derive a short display name from a SAF tree URI (e.g. "primary:DCIM/Frame" -> "Frame"). */
-private fun folderNameFromTree(uri: Uri): String {
-    val docId = runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull() ?: return ""
-    return docId.substringAfterLast('/').substringAfterLast(':').ifBlank { docId }
-}
