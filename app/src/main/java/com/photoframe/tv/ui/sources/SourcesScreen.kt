@@ -1,10 +1,5 @@
 package com.photoframe.tv.ui.sources
 
-import android.content.Intent
-import android.net.Uri
-import android.provider.DocumentsContract
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +20,6 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,38 +32,20 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Text
 
-/** Derive a short display name from a SAF tree URI (e.g. "primary:DCIM/Frame" -> "Frame"). */
-private fun folderNameFromTree(uri: Uri): String {
-    val docId = runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull() ?: return ""
-    return docId.substringAfterLast('/').substringAfterLast(':').ifBlank { docId }
-}
-
 /**
- * Manage the photo sources the slideshow pools from. Add local/USB folders (Storage Access
- * Framework) and/or Google Drive; remove any; start the slideshow once at least one exists.
+ * Manage the photo sources the slideshow pools from. Add local/USB folders (via the built-in
+ * folder picker) and/or Google Drive; remove any; start the slideshow once at least one exists.
  * Fully D-pad operable. Focus scaling is pinned to 1f so wide rows never overflow the screen.
  */
 @Composable
 fun SourcesScreen(
     sources: List<SourceEntry>,
-    onAddLocal: (treeUri: String, name: String) -> Unit,
+    onAddFolder: () -> Unit,
     onAddDrive: () -> Unit,
     onRemove: (id: String) -> Unit,
     onDone: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val folderPicker = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocumentTree(),
-    ) { uri ->
-        if (uri != null) {
-            runCatching {
-                context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            onAddLocal(uri.toString(), folderNameFromTree(uri))
-        }
-    }
-
     val hasDrive = sources.any { it.type == SourceType.DRIVE }
     val noScale = ButtonDefaults.scale(focusedScale = 1f)
     val localLabel = stringResource(R.string.type_local)
@@ -118,7 +94,7 @@ fun SourcesScreen(
         Spacer(Modifier.height(8.dp))
 
         Button(
-            onClick = { folderPicker.launch(null) },
+            onClick = onAddFolder,
             scale = noScale,
             modifier = Modifier.widthIn(max = 720.dp).fillMaxWidth(),
         ) { Text(stringResource(R.string.sources_add_folder), fontSize = 18.sp) }

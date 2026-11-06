@@ -37,3 +37,10 @@ data class DriveFolder(
     val id: String,
     val name: String,
 )
+
+/** A local/USB photo folder (MediaStore image bucket) shown in the built-in TV folder picker. */
+data class LocalBucket(
+    val id: String,
+    val name: String,
+    val count: Int,
+)

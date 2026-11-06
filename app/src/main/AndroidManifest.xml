@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Camera is used only by the phone app to scan a TV's pairing QR code. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Reading local/USB photo folders (TV local source). READ_MEDIA_IMAGES on 33+, legacy below. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <!-- Runs on both TVs (leanback) and phones/tablets (touch) — neither is required. -->
     <uses-feature

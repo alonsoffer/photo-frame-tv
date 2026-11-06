@@ -19,10 +19,11 @@ import com.photoframe.tv.di.AppGraph
 import com.photoframe.tv.ui.auth.DeviceConnectScreen
 import com.photoframe.tv.ui.settings.SettingsScreen
 import com.photoframe.tv.ui.slideshow.SlideshowScreen
+import com.photoframe.tv.ui.sources.LocalFolderPickerScreen
 import com.photoframe.tv.ui.sources.SourcesScreen
 import kotlinx.coroutines.launch
 
-private enum class Screen { Sources, DeviceConnect, Slideshow, Settings }
+private enum class Screen { Sources, LocalPicker, DeviceConnect, Slideshow, Settings }
 
 @Composable
 fun PhotoFrameApp(graph: AppGraph) {
@@ -61,7 +62,7 @@ fun PhotoFrameApp(graph: AppGraph) {
 
             Screen.Sources -> SourcesScreen(
                 sources = settings?.sources ?: emptyList(),
-                onAddLocal = { uri, name -> scope.launch { graph.settingsRepository.addLocalSource(uri, name) } },
+                onAddFolder = { screen = Screen.LocalPicker },
                 onAddDrive = {
                     if (graph.deviceAuthManager.hasRefreshToken) {
                         scope.launch { graph.settingsRepository.addDriveSource(driveName) }
@@ -82,6 +83,15 @@ fun PhotoFrameApp(graph: AppGraph) {
                         else -> Unit // nothing configured yet — stay on Sources
                     }
                 },
+            )
+
+            Screen.LocalPicker -> LocalFolderPickerScreen(
+                repo = graph.localRepository,
+                onPick = { uri, name ->
+                    scope.launch { graph.settingsRepository.addLocalSource(uri, name) }
+                    screen = Screen.Sources
+                },
+                onBack = { screen = Screen.Sources },
             )
 
             Screen.DeviceConnect -> DeviceConnectScreen(

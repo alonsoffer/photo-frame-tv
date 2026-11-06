@@ -41,8 +41,8 @@ class AppGraph(context: Context) {
     val driveRepository: DriveRepository =
         if (isDemoMode) FakeDriveRepository() else GoogleDriveRepository(okHttpClient, json)
 
-    /** Reads photos from an on-device / USB folder picked via the Storage Access Framework. */
-    val localRepository: DriveRepository = LocalPhotoRepository(appContext)
+    /** Reads photos from on-device / USB photo folders (MediaStore buckets, or legacy SAF trees). */
+    val localRepository: LocalPhotoRepository = LocalPhotoRepository(appContext)
 
     /** Coil loader that reuses our authenticated OkHttp client so Drive media URLs load with the Bearer token. */
     val imageLoader: ImageLoader = ImageLoader.Builder(appContext)

@@ -21,6 +21,12 @@
     <string name="sources_manage">Photo sources</string>
     <string name="type_local">Folder</string>
     <string name="type_drive">Google Drive</string>
+    <string name="picker_title">Pick a photo folder</string>
+    <string name="picker_loading">Looking for photo folders…</string>
+    <string name="picker_denied">Permission is needed to read photos on this device.</string>
+    <string name="picker_grant">Grant permission</string>
+    <string name="picker_empty">No photo folders found on this device or USB drive.</string>
+    <string name="action_back">Back</string>
 
     <!-- Slideshow -->
     <string name="loading_photos">Loading photos…</string>

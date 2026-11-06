@@ -1,8 +1,11 @@
 package com.photoframe.tv.drive
 
+import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -167,7 +170,13 @@ class LocalPhotoRepository(private val context: Context) : DriveRepository {
 
     override suspend fun listPhotos(folderId: String?, includeSubfolders: Boolean): List<Photo> =
         withContext(Dispatchers.IO) {
-            val treeUri = folderId?.let { runCatching { Uri.parse(it) }.getOrNull() }
+            folderId ?: return@withContext emptyList()
+            // Built-in TV picker uses MediaStore image buckets ("bucket://<id>").
+            if (folderId.startsWith(BUCKET_SCHEME)) {
+                return@withContext listBucketPhotos(folderId.removePrefix(BUCKET_SCHEME))
+            }
+            // Legacy / phone SAF tree URIs.
+            val treeUri = runCatching { Uri.parse(folderId) }.getOrNull()
                 ?: return@withContext emptyList()
             val photos = mutableListOf<Photo>()
             val rootDocId = DocumentsContract.getTreeDocumentId(treeUri)
@@ -203,11 +212,65 @@ class LocalPhotoRepository(private val context: Context) : DriveRepository {
             photos.sortedBy { it.name.lowercase() }
         }
 
-    // Local folders are picked with the system SAF picker, so no in-app folder browser is needed.
+    // Local folders are picked with the built-in MediaStore picker, so no Drive-style browser here.
     override suspend fun listFolders(parentId: String?): List<DriveFolder> = emptyList()
+
+    /** External storage volumes to query (primary + any USB/removable), across API levels. */
+    private fun imageVolumes(): Set<String> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.getExternalVolumeNames(context)
+        else setOf(MediaStore.VOLUME_EXTERNAL)
+
+    /** All image folders (buckets) on device + USB, for the built-in folder picker. */
+    suspend fun listBuckets(): List<LocalBucket> = withContext(Dispatchers.IO) {
+        val byId = LinkedHashMap<String, Pair<String, Int>>() // id -> (name, count)
+        val proj = arrayOf(
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+        )
+        for (vol in imageVolumes()) {
+            val uri = MediaStore.Images.Media.getContentUri(vol)
+            runCatching {
+                context.contentResolver.query(uri, proj, null, null, null)?.use { c ->
+                    val idCol = c.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
+                    val nameCol = c.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+                    while (c.moveToNext()) {
+                        val id = c.getString(idCol) ?: continue
+                        val name = c.getString(nameCol) ?: "Folder"
+                        val cur = byId[id]
+                        byId[id] = (cur?.first ?: name) to ((cur?.second ?: 0) + 1)
+                    }
+                }
+            }
+        }
+        byId.map { (id, v) -> LocalBucket(id, v.first, v.second) }.sortedBy { it.name.lowercase() }
+    }
+
+    /** All images in one MediaStore bucket, across every external volume. */
+    private fun listBucketPhotos(bucketId: String): List<Photo> {
+        val photos = mutableListOf<Photo>()
+        val proj = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
+        val selection = "${MediaStore.Images.Media.BUCKET_ID} = ?"
+        val args = arrayOf(bucketId)
+        val sort = "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
+        for (vol in imageVolumes()) {
+            val base = MediaStore.Images.Media.getContentUri(vol)
+            runCatching {
+                context.contentResolver.query(base, proj, selection, args, sort)?.use { c ->
+                    val idCol = c.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                    val nameCol = c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                    while (c.moveToNext()) {
+                        val itemUri = ContentUris.withAppendedId(base, c.getLong(idCol)).toString()
+                        photos += Photo(id = itemUri, name = c.getString(nameCol) ?: "", url = itemUri)
+                    }
+                }
+            }
+        }
+        return photos
+    }
 
     private companion object {
         const val MAX_FOLDERS = 2000
+        const val BUCKET_SCHEME = "bucket://"
     }
 }
 
