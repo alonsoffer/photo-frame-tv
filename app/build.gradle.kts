@@ -30,7 +30,7 @@ android {
         applicationId = "com.photoframe.tv"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
+        versionCode = 5
         versionName = "1.1"
 
         // Demo mode shows sample photos without needing a Google account. Toggle in local.properties.
